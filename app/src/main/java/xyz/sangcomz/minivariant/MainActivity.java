@@ -14,6 +14,7 @@ import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
 import com.mikepenz.materialdrawer.MiniDrawer;
+import com.mikepenz.materialdrawer.adapter.BaseDrawerAdapter;
 import com.mikepenz.materialdrawer.interfaces.ICrossfader;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
@@ -23,7 +24,7 @@ import com.mikepenz.materialdrawer.model.interfaces.Nameable;
 import com.mikepenz.materialdrawer.util.DrawerUIUtils;
 import com.mikepenz.materialize.util.UIUtils;
 
-public class MainActivity  extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
 
     //save our header or result
     private AccountHeader headerResult = null;
@@ -55,6 +56,17 @@ public class MainActivity  extends AppCompatActivity {
                 .addProfiles(profile)
                 .withSelectionListEnabledForSingleProfile(false)
                 .withSavedInstance(savedInstanceState)
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean currentProfile) {
+
+                        System.out.println("aaaaaaa :::: ");
+                        System.out.println("view :::: " + view);
+                        System.out.println("currentProfile :::: " + currentProfile);
+                        //my Page로 이동??
+                        return false;
+                    }
+                })
                 .build();
 
         //create the CrossfadeDrawerLayout which will be used as alternative DrawerLayout for the Drawer
@@ -104,6 +116,18 @@ public class MainActivity  extends AppCompatActivity {
         //add second view (which is the miniDrawer)
         miniResult = new MiniDrawer()
                 .withDrawer(result)
+                .withOnMiniDrawerItemClickListener(new BaseDrawerAdapter.OnClickListener() {
+                    @Override
+                    public void onClick(View v, int position, IDrawerItem item) {
+                        System.out.println("mini :::: " + position);
+                        if (position == 0) {
+                            crossfadeDrawerLayout.crossfade();
+                        } else {
+                            crossfadeDrawerLayout.closeDrawers();
+                        }
+
+                    }
+                })
                 .withAccountHeader(headerResult);
         //build the view for the MiniDrawer
         View view = miniResult.build(this);
